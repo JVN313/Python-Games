@@ -1,0 +1,11 @@
+Main goal of the game is to get to Doom Tower and destroy the Dark Crystal guarded by the Black Knight.
+The player will have to make decisons on paths to take and items to collect in order to acheive the main goal.
+Being unprepared can lead to the player's defeat and end the adventure.
+The player can hold two weapons and one item which they will encounter based on their decisons.
+The player starts off their journey by having to choose one of three weapons: Sword, Spear, and Staff
+The player can obtain subweapons: Shield, Dagger, Spellbook
+    Shield can block attacks
+    Dagger can pick locks and be thrown
+    Spellbook can be used to cast stronger spells with the staff base spells: Ember and Ice Shard. Strong splells: Inferno and Ice Bridge weak spells: Fire and Flash
+choosing LEFT in the inital path leads to a haunted forest where the monsters/ghost are weak to magic, inside the forest their is ancient ruins with Living Suits of armor.
+choosing RIGHT in the inital path leads to a road riddled with axe wielding bandits 
