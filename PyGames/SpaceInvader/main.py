@@ -10,6 +10,9 @@ mixer.init()
 # creation of the screen/window
 screen = pygame.display.set_mode((800, 600))
 background = pygame.image.load(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\background.png")
+mixer.music.load(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\backgroundMusic.wav")
+mixer.music.set_volume(0.5)
+mixer.music.play()
 
 # Title and Icon
 pygame.display.set_caption("Space Invaders")
@@ -39,6 +42,10 @@ laser_state = "ready"
 
 score = 0
 
+#sounds
+explosion_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\explosionSound.wav")
+laser_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\LaserSound.wav")
+
 def fire_laser(x,y):
     global laser_state
     laser_state = "fire"
@@ -52,7 +59,7 @@ def enemy(x,y):
 
 def isCollision(enemyX,enemyY,laserX,laserY):
     distance = (math.sqrt(math.pow(enemyX-laserX,2)) + (math.pow(enemyY-laserY,2)))
-    if distance < 27:
+    if distance < 35:
         return True
     else:
         return False
@@ -63,9 +70,6 @@ while running:
     # Screen Color in RGB Values
     screen.fill((67, 59, 103))
     screen.blit(background, (0,0))
-    mixer.music.load(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\backgroundMusic.mp3")
-    mixer.music.set_volume(0.7)
-    mixer.music.play()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -110,6 +114,8 @@ while running:
 
     if laser_state == "fire":
         fire_laser(laserX, laserY)
+        #laser_sound.set_volume(0.1)
+        #laser_sound.play()
         laserY-= laserY_movement
 
     collision = isCollision(enemyX,enemyY,laserX,laserY)
@@ -117,6 +123,7 @@ while running:
         laserY = 480
         laser_state = "ready"
         score+= 1
+        explosion_sound.play()
         enemyX = random.randint(0,736)
         enemyY = random.randint(50, 150)
         print(score)
