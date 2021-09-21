@@ -12,7 +12,7 @@ screen = pygame.display.set_mode((800, 600))
 background = pygame.image.load(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\background.png")
 mixer.music.load(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\backgroundMusic.wav")
 mixer.music.set_volume(0.5)
-mixer.music.play()
+mixer.music.play(-1)
 
 # Title and Icon
 pygame.display.set_caption("Space Invaders")
@@ -25,12 +25,20 @@ playerX = 370
 playerY = 480
 playerX_movement = 0
 
-#Enemy
-enemyImg = pygame.image.load(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\enemy.png")
-enemyX = random.randint(0,736)
-enemyY = random.randint(50, 150)
-enemyX_movement = 4
-enemyY_movement = 40
+#Enemy/Enemies
+enemyImg = []
+enemyX = []
+enemyY = []
+enemyX_movement = []
+enemyY_movement = []
+num_of_enemies = 4
+
+for i in range(num_of_enemies):
+    enemyImg.append(pygame.image.load(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\enemy.png"))
+    enemyX.append(random.randint(0,736))
+    enemyY.append(random.randint(50, 150))
+    enemyX_movement.append(4)
+    enemyY_movement.append(40)
 
 #Laser
 laserImg = pygame.image.load(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\laser.png")
@@ -42,9 +50,12 @@ laser_state = "ready"
 
 #Scoreboard
 player_score = 0
-font = pygame.font.Font("freesansbold.ttf",34)
+font = pygame.font.Font("freesansbold.ttf",32)
 scoreX = 10
 scoreY = 10
+rankX = 10
+rankY = 40
+rank_font = pygame.font.Font("freesansbold.ttf",20)
 
 #sounds
 explosion_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\explosionSound.wav")
@@ -56,6 +67,14 @@ def score_board(x,y):
     score = font.render("SCORE: " + str(player_score), True, (255,255,255))
     screen.blit(score, (x,y))
 
+def player_rank(x,y):
+    global player_score, background
+    if player_score >= 50:
+        rank = rank_font.render("SPACE RANGER", True, (255,255,255))
+        screen.blit(rank, (x,y))
+
+
+
 def fire_laser(x,y):
     global laser_state
     laser_state = "fire"
@@ -64,12 +83,12 @@ def fire_laser(x,y):
 def player(x,y):
     screen.blit(playerImg, (x, y))
 
-def enemy(x,y):
-    screen.blit(enemyImg, (x, y))
+def enemy(x,y,i):
+    screen.blit(enemyImg[i], (x, y))
 
 def isCollision(enemyX,enemyY,laserX,laserY):
     distance = (math.sqrt(math.pow(enemyX-laserX,2)) + (math.pow(enemyY-laserY,2)))
-    if distance < 35:
+    if distance < 38:
         return True
     else:
         return False
@@ -95,6 +114,8 @@ while running:
             if event.key == pygame.K_SPACE:
                 if laser_state == "ready":
                     laserX = playerX
+                    laser_sound.set_volume(0.1)
+                    laser_sound.play()
                     fire_laser(laserX, laserY)
 
         if event.type == pygame.KEYUP:
@@ -109,14 +130,26 @@ while running:
     elif playerX >= 736:
         playerX = 736
 
-    enemyX += enemyX_movement
+    for i in range(num_of_enemies):
+        enemyX[i] += enemyX_movement[i]
+        if enemyX[i] <= 0:
+            enemyX_movement[i] = 4
+            enemyY[i] += enemyY_movement[i]
+        elif enemyX[i] >= 736:
+            enemyX_movement[i] = -4
+            enemyY[i] += enemyY_movement[i]
+
+        collision = isCollision(enemyX[i],enemyY[i],laserX,laserY)
+        if collision:
+            laserY = 480
+            laser_state = "ready"
+            player_score+= 1
+            explosion_sound.play()
+            enemyX[i] = random.randint(0,736)
+            enemyY[i] = random.randint(50, 150)
+
+        enemy(enemyX[i], enemyY[i], i)
     
-    if enemyX <= 0:
-        enemyX_movement = 4
-        enemyY += enemyY_movement
-    elif enemyX >= 736:
-        enemyX_movement = -4
-        enemyY += enemyY_movement
     #Laser Movement
     if laserY <= 0:
         laserY = 480
@@ -124,21 +157,20 @@ while running:
 
     if laser_state == "fire":
         fire_laser(laserX, laserY)
-        #laser_sound.set_volume(0.1)
-        #laser_sound.play()
         laserY-= laserY_movement
 
-    collision = isCollision(enemyX,enemyY,laserX,laserY)
-    if collision:
-        laserY = 480
-        laser_state = "ready"
-        player_score+= 1
-        explosion_sound.play()
-        enemyX = random.randint(0,736)
-        enemyY = random.randint(50, 150)
+#    collision = isCollision(enemyX,enemyY,laserX,laserY)
+#    if collision:
+#        laserY = 480
+#        laser_state = "ready"
+#        player_score+= 1
+#        explosion_sound.play()
+#        enemyX = random.randint(0,736)
+#        enemyY = random.randint(50, 150)
         
     #Calling Functions
     player(playerX, playerY)
-    enemy(enemyX, enemyY)
+    player_rank(rankX,rankY)
+#    enemy(enemyX, enemyY)
     score_board(scoreX,scoreY)
     pygame.display.update()
