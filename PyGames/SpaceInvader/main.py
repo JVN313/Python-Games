@@ -40,11 +40,21 @@ laserX_movement = 0
 laserY_movement = 10
 laser_state = "ready"
 
-score = 0
+#Scoreboard
+player_score = 0
+font = pygame.font.Font("freesansbold.ttf",34)
+scoreX = 10
+scoreY = 10
 
 #sounds
 explosion_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\explosionSound.wav")
 laser_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\LaserSound.wav")
+
+#Object Functions
+
+def score_board(x,y):
+    score = font.render("SCORE: " + str(player_score), True, (255,255,255))
+    screen.blit(score, (x,y))
 
 def fire_laser(x,y):
     global laser_state
@@ -64,7 +74,7 @@ def isCollision(enemyX,enemyY,laserX,laserY):
     else:
         return False
 
-# The Game Loop
+# The Game Loop/Master Loop
 running = True
 while running:
     # Screen Color in RGB Values
@@ -122,12 +132,13 @@ while running:
     if collision:
         laserY = 480
         laser_state = "ready"
-        score+= 1
+        player_score+= 1
         explosion_sound.play()
         enemyX = random.randint(0,736)
         enemyY = random.randint(50, 150)
-        print(score)
-
+        
+    #Calling Functions
     player(playerX, playerY)
     enemy(enemyX, enemyY)
+    score_board(scoreX,scoreY)
     pygame.display.update()
