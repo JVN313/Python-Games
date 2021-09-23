@@ -132,6 +132,9 @@ while running:
             if event.key == pygame.K_RIGHT:
                 playerX_movement = + 5
 
+            if event.key == pygame.K_ESCAPE:
+                quit()
+
             if event.key == pygame.K_SPACE:
                 if laser_state == "ready":
                     laserX = playerX
@@ -154,7 +157,7 @@ while running:
     #Enemey Actions/Movement
     for i in range(num_of_enemies):
         
-        if enemyY[i] > 440:
+        if enemyY[i] > 450:
             for j in range(num_of_enemies):
                 enemyY[j] = 2000
             game_over_message(game_overX,game_overY)
