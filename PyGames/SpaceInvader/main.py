@@ -63,6 +63,10 @@ game_over_font = pygame.font.Font("freesansbold.ttf",70)
 game_overX = 200
 game_overY = 230
 
+replay_font = pygame.font.Font("freesansbold.ttf",40)
+replayX = 125
+replayY = 430
+
 #sounds
 explosion_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\explosionSound.wav")
 laser_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\LaserSound.wav")
@@ -80,9 +84,17 @@ def player_rank(x,y):
         screen.blit(rank, (x,y))
 
 def game_over_message(x,y):
-    global endgame_font
     game_over = game_over_font.render("GAME OVER", True, (255,255,255))
     screen.blit(game_over, (x,y))
+
+def reset(x,y):
+    replay = replay_font.render("Fire to replay and ESC to exit", True, (255,255,255))
+    screen.blit(replay, (x,y))
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_ESCAPE]:
+        exit()
+    if keys[pygame.K_SPACE]:
+        exec(open(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\main.py").read())
 
 def fire_laser(x,y):
     global laser_state
@@ -146,7 +158,7 @@ while running:
             for j in range(num_of_enemies):
                 enemyY[j] = 2000
             game_over_message(game_overX,game_overY)
-            break
+            reset(replayX,replayY)
 
         enemyX[i] += enemyX_movement[i]
         if enemyX[i] <= 0:
@@ -182,3 +194,4 @@ while running:
 #    enemy(enemyX, enemyY)
     score_board(scoreX,scoreY)
     pygame.display.update()
+pygame.quit()
