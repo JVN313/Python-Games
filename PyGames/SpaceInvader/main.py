@@ -3,6 +3,8 @@ from pygame import mixer
 import random
 import math
 
+from pygame.constants import K_KP_ENTER, K_q
+
 # Intialize the pygame
 pygame.init()
 mixer.init()
@@ -57,6 +59,10 @@ rankX = 10
 rankY = 40
 rank_font = pygame.font.Font("freesansbold.ttf",20)
 
+game_over_font = pygame.font.Font("freesansbold.ttf",70)
+game_overX = 200
+game_overY = 230
+
 #sounds
 explosion_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\explosionSound.wav")
 laser_sound = mixer.Sound(r"C:\Users\jaebo\Desktop\Projects\Python-Games\PyGames\SpaceInvader\LaserSound.wav")
@@ -73,7 +79,10 @@ def player_rank(x,y):
         rank = rank_font.render("SPACE RANGER", True, (255,255,255))
         screen.blit(rank, (x,y))
 
-
+def game_over_message(x,y):
+    global endgame_font
+    game_over = game_over_font.render("GAME OVER", True, (255,255,255))
+    screen.blit(game_over, (x,y))
 
 def fire_laser(x,y):
     global laser_state
@@ -129,8 +138,16 @@ while running:
         playerX = 0
     elif playerX >= 736:
         playerX = 736
-
+    
+    #Enemey Actions/Movement
     for i in range(num_of_enemies):
+        
+        if enemyY[i] > 440:
+            for j in range(num_of_enemies):
+                enemyY[j] = 2000
+            game_over_message(game_overX,game_overY)
+            break
+
         enemyX[i] += enemyX_movement[i]
         if enemyX[i] <= 0:
             enemyX_movement[i] = 4
@@ -158,15 +175,6 @@ while running:
     if laser_state == "fire":
         fire_laser(laserX, laserY)
         laserY-= laserY_movement
-
-#    collision = isCollision(enemyX,enemyY,laserX,laserY)
-#    if collision:
-#        laserY = 480
-#        laser_state = "ready"
-#        player_score+= 1
-#        explosion_sound.play()
-#        enemyX = random.randint(0,736)
-#        enemyY = random.randint(50, 150)
         
     #Calling Functions
     player(playerX, playerY)
